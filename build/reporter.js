@@ -165,8 +165,8 @@ var JunitReporter = function (_events$EventEmitter) {
                                         var output = this.getStandardOutput(test);
                                         if (output) testCase.standardOutput('\n' + output + '\n');
 
-                                        var filePath = _path2.default.join(this.options.outputDir, packageName + '.' + suiteName + '.' + testName + '.xml');
-                                        // console.log(filePath)
+                                        var filePath = _path2.default.join(this.options.outputDir, (packageName + '.' + suiteName + '.xml').replace(/\//g, '_'));
+                                        console.log(filePath);
                                         var xml = builder.build();
                                         // console.log(xml)
                                         _fs2.default.writeFileSync(filePath, xml);
