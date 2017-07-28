@@ -1,6 +1,6 @@
 {
-  "name": "wdio-junit-reporter",
-  "version": "0.3.0",
+  "name": "wdio-junit-morganchristiansson-reporter",
+  "version": "0.3.1",
   "description": "A WebdriverIO plugin. Report results in junit xml format.",
   "main": "build/reporter.js",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webdriverio/wdio-junit-reporter.git"
+    "url": "git+https://github.com/morganchristiansson/wdio-junit-reporter.git"
   },
   "directories": {
     "lib": "./lib"
@@ -37,9 +37,9 @@
   "author": "Christian Bromann <christian@saucelabs.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/webdriverio/wdio-junit-reporter/issues"
+    "url": "https://github.com/morganchristiansson/wdio-junit-reporter/issues"
   },
-  "homepage": "https://github.com/webdriverio/wdio-junit-reporter#readme",
+  "homepage": "https://github.com/morganchristiansson/wdio-junit-reporter#readme",
   "dependencies": {
     "junit-report-builder": "~1.2.0",
     "mkdirp": "~0.5.1"
