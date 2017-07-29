@@ -140,9 +140,9 @@
         "12345": {
           "files": ["/path/to/file2.spec.js"],
           "suites": {
-            "some foobar test1": {
-              "uid": "some foobar test1",
-              "title": "some foobar test",
+            "1-some foobar test1": {
+              "uid": "1-some foobar test1",
+              "title": "1-some foobar test",
               "duration": 1000,
               "start": 500,
               "tests": {
@@ -178,9 +178,9 @@
                 }
               }
             },
-            "some other foobar test2": {
-              "uid": "some other foobar test2",
-              "title": "some other foobar test",
+            "1-some other foobar test2": {
+              "uid": "1-some other foobar test2",
+              "title": "1-some other foobar test",
               "duration": 1000,
               "start": 500,
               "tests": {
@@ -216,9 +216,9 @@
                 }
               }
             },
-            "some spec title3": {
-              "uid": "some spec title3",
-              "title": "some special ** spec title",
+            "1-some spec title3": {
+              "uid": "1-some spec title3",
+              "title": "1-some special ** spec title",
               "duration": 1000,
               "start": 500,
               "tests": {

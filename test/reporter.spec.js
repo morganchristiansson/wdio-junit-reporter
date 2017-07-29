@@ -29,48 +29,54 @@ describe('junit reporter', () => {
             reporter.onEnd()
         })
 
-        it('should have generated an output file for each testcase', () => {
-            fs.readdirSync(outputDir).should.have.length(9)
+        it('should have generated an output file for each suite', () => {
+            fs.readdirSync(outputDir).should.have.length(6)
         })
 
         describe('content checks', () => {
-            let xml1 = null
-            let xml1Content = null
-            let xml2 = null
-            let xml2Content = null
+            let xml = null
+            let xmlContent = []
 
             before(() => {
-                [ xml1, xml2 ] = fs.readdirSync(outputDir)
-                xml1Content = fs.readFileSync(path.join(outputDir, xml1), 'utf8')
-                xml2Content = fs.readFileSync(path.join(outputDir, xml2), 'utf8')
+                xml = fs.readdirSync(outputDir)
+                console.log("readdir: "+fs.readdirSync(outputDir))
+                xml.forEach((filePath, i) => {
+                    xmlContent[i] = fs.readFileSync(path.join(outputDir, filePath), 'utf8')
+                })
             })
 
             it('should have correct file names', () => {
-                xml1.should.be.equal('phantomjs.some_foobar_test.bar.xml')
-                xml2.should.be.equal('phantomjs.some_foobar_test.foo.xml')
+                xml.should.be.deepEqual([
+                    'phantomjs.1_some_foobar_test.xml',
+                    'phantomjs.1_some_other_foobar_test.xml',
+                    'phantomjs.1_some_special_spec_title.xml',
+                    'phantomjs.some_foobar_test.xml',
+                    'phantomjs.some_other_foobar_test.xml',
+                    'phantomjs.some_spec_title.xml'
+                ])
             })
 
             it('should be valid xml', () => {
-                const xmlDoc1 = libxml.parseXml(xml1Content)
-                const xmlDoc2 = libxml.parseXml(xml2Content)
+                const xmlDoc1 = libxml.parseXml(xmlContent[1])
+                const xmlDoc2 = libxml.parseXml(xmlContent[2])
                 xmlDoc1.errors.should.have.length(0)
                 xmlDoc2.errors.should.have.length(0)
             })
 
             it('should have content for skipped test', () => {
-                xml2Content.should.containEql(
+                xmlContent[5].should.containEql(
                 // eslint-disable-next-line
 `    <testcase classname="phantomjs.some_special_spec_title" name="skipped_test" time="1">`)
             })
 
             it('should have expected content', () => {
-                xml1Content.should.containEql(
+                xmlContent[1].should.containEql(
                     '<property name="file" value="/path/to/file.spec.js"/>'
                 )
-                xml2Content.should.containEql(
+                xmlContent[2].should.containEql(
                     '<property name="file" value="/path/to/file2.spec.js"/>'
                 )
-                xml1Content.should.containEql(
+                xmlContent[1].should.containEql(
                 // eslint-disable-next-line
 `    <testcase classname="phantomjs.some_other_foobar_test" name="that_is_a_test" time="1">
       <system-out>
@@ -79,7 +85,7 @@ COMMAND: POST /path/to/command - "some payload"
 ]]>
       </system-out>
     </testcase>`)
-                xml1Content.should.containEql(
+                xmlContent[1].should.containEql(
                 // eslint-disable-next-line
 `    <properties>
       <property name="specId" value="12345"/>
@@ -88,7 +94,7 @@ COMMAND: POST /path/to/command - "some payload"
       <property name="file" value="/path/to/file.spec.js"/>
     </properties>`)
 
-                xml1Content.should.containEql(
+                xmlContent[1].should.containEql(
                 // eslint-disable-next-line
 `<system-err>
         <![CDATA[
@@ -135,7 +141,8 @@ with new line
             reporter.onEnd()
 
             const files = fs.readdirSync(outputDir)
-            xml2Content = fs.readFileSync(path.join(outputDir, files[1]), 'utf8')
+            console.log("files"+files.join('\n'))
+            xml2Content = fs.readFileSync(path.join(outputDir, files[2]), 'utf8')
         })
 
         after(() => {
@@ -188,7 +195,7 @@ with new line
         it('should not crash when fed by cucumber', () => {
             reporter.onEnd()
             const files = fs.readdirSync(outputDir)
-            files.should.have.lengthOf(1)
+            files.should.have.lengthOf(2)
         })
     })
 })
