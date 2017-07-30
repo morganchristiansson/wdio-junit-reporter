@@ -39,7 +39,6 @@ describe('junit reporter', () => {
 
             before(() => {
                 xml = fs.readdirSync(outputDir)
-                console.log("readdir: "+fs.readdirSync(outputDir))
                 xml.forEach((filePath, i) => {
                     xmlContent[i] = fs.readFileSync(path.join(outputDir, filePath), 'utf8')
                 })
@@ -141,7 +140,6 @@ with new line
             reporter.onEnd()
 
             const files = fs.readdirSync(outputDir)
-            console.log("files"+files.join('\n'))
             xml2Content = fs.readFileSync(path.join(outputDir, files[2]), 'utf8')
         })
 

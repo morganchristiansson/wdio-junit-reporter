@@ -106,6 +106,7 @@ var JunitReporter = function (_events$EventEmitter) {
         key: 'prepareXml',
         value: function prepareXml(capabilities) {
             var packageName = this.options.packageName ? capabilities.sanitizedCapabilities + '-' + this.options.packageName : capabilities.sanitizedCapabilities;
+            var suiteNames = {};
 
             var _iteratorNormalCompletion2 = true;
             var _didIteratorError2 = false;
@@ -134,7 +135,19 @@ var JunitReporter = function (_events$EventEmitter) {
                             }
 
                             var suite = spec.suites[suiteKey];
+
                             var suiteName = this.prepareName(suite.title);
+                            // Add -suffix for duplicates to avoid overwriting existing results from same run
+                            var suiteNameReal = suiteName;
+                            suiteNames[suiteNameReal] = suiteNames[suiteNameReal] || 0;
+                            if (suiteNames[suiteNameReal]) {
+                                suiteName = suiteNameReal + '-' + suiteNames[suiteNameReal];
+                            }
+                            suiteNames[suiteNameReal]++;
+                            console.log('suiteNames: ' + suiteNames);
+
+                            var builder = _junitReportBuilder2.default.newBuilder();
+                            var testSuite = builder.testSuite().name(suiteName).timestamp(suite.start).time(suite.duration / 1000).property('specId', specId).property('suiteName', suite.title).property('capabilities', capabilities.sanitizedCapabilities).property('file', spec.files[0].replace(process.cwd(), '.'));
 
                             var _iteratorNormalCompletion4 = true;
                             var _didIteratorError4 = false;
@@ -149,8 +162,6 @@ var JunitReporter = function (_events$EventEmitter) {
                                         var test = suite.tests[testKey];
                                         var testName = this.prepareName(test.title);
 
-                                        var builder = _junitReportBuilder2.default.newBuilder();
-                                        var testSuite = builder.testSuite().name(suiteName).timestamp(suite.start).time(suite.duration / 1000).property('specId', specId).property('suiteName', suite.title).property('capabilities', capabilities.sanitizedCapabilities).property('file', spec.files[0].replace(process.cwd(), '.'));
                                         var testCase = testSuite.testCase().className(packageName + '.' + suiteName).name(testName).time(test.duration / 1000);
 
                                         if (test.state === 'pending') {
@@ -164,12 +175,6 @@ var JunitReporter = function (_events$EventEmitter) {
 
                                         var output = this.getStandardOutput(test);
                                         if (output) testCase.standardOutput('\n' + output + '\n');
-
-                                        var filePath = _path2.default.join(this.options.outputDir, (packageName + '.' + suiteName + '.' + testName + '.xml').replace(/\//g, '_'));
-                                        console.log(filePath);
-                                        var xml = builder.build();
-                                        // console.log(xml)
-                                        _fs2.default.writeFileSync(filePath, xml);
                                     }
                                 }
                             } catch (err) {
@@ -186,6 +191,13 @@ var JunitReporter = function (_events$EventEmitter) {
                                     }
                                 }
                             }
+
+                            var fileName = (packageName + '.' + suiteName + '.xml').replace(/\//g, '_');
+                            var filePath = _path2.default.join(this.options.outputDir, fileName);
+                            console.log(filePath);
+                            var xml = builder.build();
+                            // console.log(xml)
+                            _fs2.default.writeFileSync(filePath, xml);
                         }
                     } catch (err) {
                         _didIteratorError3 = true;
